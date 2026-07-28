@@ -1,6 +1,11 @@
-from playwright.sync_api import sync_playwright
 from camoufox.async_api import AsyncCamoufox
-import asyncio
+import asyncio, aiohttp
+from pathlib import Path
+
+root_dir = Path(__file__).resolve().parent.parent
+
+New_Data_dir = root_dir / "Images"
+
 
 anime_dict = {
     "MAPPA": ["Jujutsu Kaisen", "Chainsaw Man", "Attack on Titan The Final Season"],
@@ -12,6 +17,8 @@ anime_dict = {
     "Kyoto Animation": ["Violet Evergarden","Hyouka", "Miss Kobayashi's Dragon Maid", "Miss Kobayashi's Dragon Maid S"]
 }
 
+studio_and_img = {}
+
 async def scrape_stuff():
     
     async with AsyncCamoufox() as browser:
@@ -19,10 +26,13 @@ async def scrape_stuff():
         page = await browser.new_page()
 
         for keys, val in anime_dict.items():
+            all_images = set()
+
             for i in range(len(val)):
+
                 await page.goto("https://fancaps.net/search.php")
 
-                await page.wait_for_timeout(3000)
+                await page.wait_for_load_state("networkidle")
 
                 accept_cookie = page.locator("#accept-btn")
 
@@ -39,6 +49,77 @@ async def scrape_stuff():
 
                 await page.get_by_role("link", name=anime_dict[keys][i], exact=True).click()
 
+                while True:
+
+                    images = await page.locator(".imageFade").evaluate_all(
+                        "imgs => imgs.map(img => img.src)"
+                    )
+
+                    all_images.update(images)
+
+                    old = page.url.split("#")[0]
+
+                    await page.get_by_role("link", name="Next").click()
+
+                    await page.wait_for_load_state("networkidle")
+
+                    new = page.url.split("#")[0]
+
+                    if old == new:
+                        break
+
+            print(all_images)
+            studio_and_img[keys] = list(all_images)
 
 
-asyncio.run(scrape_stuff())
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Referer": "https://fancaps.net/",
+}
+
+async def download_image(session, studio, url):
+    try:
+        async with session.get(url, headers=HEADERS) as response:
+
+            if response.status != 200:
+                print(f"FAILED ({response.status}): {url}")
+                return
+
+            data = await response.read()
+            filename = url.split("/")[-1].split("?")[0]  # strip query params too
+
+            with open(studio / filename, "wb") as f:
+                f.write(data)
+
+    except Exception as e:
+        print(f"Exception on {url}: {e}")
+
+async def download_images(session):
+
+    tasks = []
+
+    for key_studio, val_urls in studio_and_img.items():
+        STUDIO_DIR = New_Data_dir / key_studio
+
+        STUDIO_DIR.mkdir(parents=True, exist_ok=True)
+
+        for url in val_urls:
+
+            tasks.append(
+                asyncio.create_task(download_image(session, STUDIO_DIR, url))
+            )
+
+    await asyncio.gather(*tasks)
+
+
+async def main():
+
+    await scrape_stuff()
+
+    async with aiohttp.ClientSession() as session:
+        await download_images(session)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
