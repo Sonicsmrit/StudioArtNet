@@ -7,6 +7,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 
 IMAGE_DIR = ROOT_DIR / "Images"
 
+# Removing duplicates from the already created Image folder
 def dedup_studio(studio_dir):
     phasher = PHash()
     encoding = phasher.encode_images(image_dir=studio_dir)
@@ -34,11 +35,11 @@ if __name__ == "__main__":
         print(f"{studio}: {before} -> {after} (removed {removed})")
 
 
-for studio in anime_dict.keys():
+    for studio in anime_dict.keys():
 
-    Studio_dir = IMAGE_DIR / studio
+        Studio_dir = IMAGE_DIR / studio
 
-    img = len(list(Studio_dir.glob("*")))
+        img = len(list(Studio_dir.glob("*")))
 
-    print(f"{studio} images: {img}")
+        print(f"{studio} images: {img}")
 

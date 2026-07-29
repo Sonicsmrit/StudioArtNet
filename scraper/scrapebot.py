@@ -9,11 +9,12 @@ New_Data_dir = root_dir / "Images"
 anime_dict = {
     "MAPPA": ["Jujutsu Kaisen", "Chainsaw Man", "Attack on Titan The Final Season"],
     "ufotable": ["Demon Slayer","Fate/Stay Night: Unlimited Blade Works", "Fate/Zero", "Fate/Zero S2"],
-    "Trigger": ["Kill la Kill","Little Witch Academia", "Cyberpunk: Edgerunners"],
+    "Trigger": ["Kill la Kill","Little Witch Academia", "Cyberpunk: Edgerunners","SSSS.Dynazenon","SSSS.Gridman","Kiznaiver"],
     "Wit Studio": ["Attack on Titan","Attack on Titan Season 2", "Vinland Saga","Ranking of Kings"],
     "Bones": ["My Hero Academia","Mob Psycho 100","Mob Psycho 100 II", "Fullmetal Alchemist: Brotherhood"],
     "Madhouse":["One Punch Man","Hunter x Hunter (2011)","Overlord","Overlord II"],
-    "Kyoto Animation": ["Violet Evergarden","Hyouka", "Miss Kobayashi's Dragon Maid", "Miss Kobayashi's Dragon Maid S"]
+    "Kyoto Animation": ["Violet Evergarden","Hyouka", "Miss Kobayashi's Dragon Maid", "Miss Kobayashi's Dragon Maid S","Sound! Euphonium 2","Sound! Euphonium 3","Free! - Iwatobi Swim Club","Free! Eternal Summer"]
+
 }
 
 studio_and_img = {}
