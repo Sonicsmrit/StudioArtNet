@@ -50,3 +50,7 @@ Grad-CAM (`pytorch-grad-cam`, hooked on `layer4[-1]`) was run across correctly a
 
 - Class sizes are small (224 train images/class) by deep learning standards, a meaningful factor in both the overfitting pattern seen in stage 2 and the genre/content confounds surfaced by Grad-CAM.
 - Only trained/raw model weights and code are published in this repository. No scraped image dataset is redistributed.
+
+## This is not good enough!
+
+Change the entire dataset, from test, val, and train getting the same anime to now, test getting the 320 images from the shows that already exist, and test and val getting new shows entirely!!
