@@ -4,6 +4,7 @@ import random
 import os
 from pathlib import Path
 from scrapebot import anime_dict
+
 random.seed(42)
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -14,6 +15,7 @@ TARGET_SIZE = 320
 
 
 for studio in anime_dict.keys():
+    
     studio_dir = IMAGE_DIR / studio
     all_files = list(studio_dir.glob("*"))
 
