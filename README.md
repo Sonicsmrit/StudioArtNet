@@ -1,56 +1,60 @@
-# Studio Art Net
-
-A fine-tuned ResNet-50 classifier that predicts which anime studio produced a given frame, based on visual rendering style rather than character or content recognition. Built as part of a self-directed 30-week ML curriculum project (transfer learning + explainability module).
-
-## Motivation
-
-I wanted to see if it's possible to separate anime studios by art style. So I tried it!
+# ꧁⎝StudioArtNet⎠꧂
+ResNet-50 classifier that predicts which anime studio produced a given frame, based on visual style rather than character content.
 
 ## Classes
 
-Seven major anime studios, each represented by 3–4 shows chosen to control for era (roughly 2013–2023) and to avoid over-indexing on a single show's specific characters or color palette:
-
-| Studio | Shows |
+| Studio | Training shows |
 |---|---|
 | MAPPA | Jujutsu Kaisen, Chainsaw Man, Attack on Titan: The Final Season |
 | ufotable | Demon Slayer, Fate/Stay Night: Unlimited Blade Works, Fate/Zero (+ S2) |
-| Trigger | Kill la Kill, Little Witch Academia (TV), Cyberpunk: Edgerunners |
+| Trigger | Kill la Kill, Little Witch Academia (TV), Cyberpunk: Edgerunners, SSSS.Gridman, SSSS.Dynazenon, Kiznaiver |
 | Wit Studio | Attack on Titan (S1–2), Vinland Saga, Ranking of Kings |
 | Bones | My Hero Academia, Mob Psycho 100 (+ II), Fullmetal Alchemist: Brotherhood |
 | Madhouse | One Punch Man, Hunter x Hunter (2011), Overlord (+ II) |
-| Kyoto Animation | Violet Evergarden, Hyouka, Miss Kobayashi's Dragon Maid (+ S), Sound! Euphonium, Free! |
+| Kyoto Animation | Violet Evergarden, Hyouka, Miss Kobayashi's Dragon Maid (+ S), Sound! Euphonium (2, 3), Free! (+ Eternal Summer) |
 
 ## Dataset
 
-- **Source**: screencap frames scraped per-episode from a screenshot archive site, ~4 images per episode across all available episodes per show.
-- **Deduplication**: perceptual hashing (`imagededup`, PHash, distance threshold 10) to remove near-identical sequential frames, since raw scraping pulled consecutive frames from the same scene.
-- **Balancing**: post-dedup counts varied significantly by studio (185–736 images). Thinner classes (Kyoto Animation, Trigger) were supplemented with additional same-era, same-genre-lane shows; all classes were then randomly downsampled to a common target of **320 images per studio** (2,240 images total) to avoid class-imbalance bias.
-- **Split**: 70/15/15 train/val/test, applied independently per class (224 / 48 / 48 per studio), split before any augmentation.
+- Frames scraped per-episode from a screencap archive, ~4 images/episode.
+- Deduplicated with `imagededup` (PHash, threshold 10).
+- Train: 320 images/studio, randomly balanced across classes (2,240 total).
+- Val/test: separate, unseen shows per studio — no overlap with training shows.
 
-## Model & Training
+| Studio | Val show | Test show |
+|---|---|---|
+| MAPPA | Dorohedoro | Banana Fish |
+| ufotable | God Eater | Tales of Zestiria the X |
+| Trigger | Space Patrol Luluco | BNA: Brand New Animal |
+| Wit Studio | Kabaneri of the Iron Fortress | Vivy: Fluorite Eye's Song |
+| Bones | Noragami | Bungo Stray Dogs |
+| Madhouse | Parasyte -the maxim- | Death Parade |
+| Kyoto Animation | Tamako Market | Beyond the Boundary |
 
-Two-stage transfer learning on a pretrained ResNet-50:
+## Model
 
-**Stage 1 — head-only.** All layers frozen except a newly initialized FC layer (2048 → 7). Trained 5 epochs at `lr=1e-3` (Adam), only on the FC head. Ends around 66% train / 55% val accuracy — confirms the head is learning real signal before touching the backbone.
+Two-stage transfer learning, pretrained ResNet-50:
 
-**Stage 2 — partial unfreeze.** `layer3` and `layer4` unfrozen alongside the FC head, trained at `lr=1e-4` (10x lower than stage 1) for up to 10 epochs. Val loss consistently bottoms out around **epoch 3** across repeated runs (val loss ≈0.96, val accuracy ≈66%), after which train accuracy keeps climbing to ~99–100% while val loss climbs — a clear, reproducible overfitting signal given the small per-class dataset. The epoch-3 checkpoint (lowest val loss) is used as the final model rather than the final epoch.
+1. **Head-only**: backbone frozen, FC layer (2048 → 7) trained 5 epochs, `lr=1e-3`.
+2. **Partial unfreeze**: `fc` and `layer4` unfrozen, `lr=1e-4`. Best checkpoint selected by lowest val loss.
 
-## Explainability — Grad-CAM findings
+## Results
 
-Grad-CAM (`pytorch-grad-cam`, hooked on `layer4[-1]`) was run across correctly and incorrectly classified test images from all 7 classes to inspect *what* the model actually learned to key on. This produced the project's most interesting result: **the model's real learned signal varies significantly by studio, and is often not "art style" in the intended sense.**
+- Test accuracy: **~35%** (random baseline for 7 classes: ~14%).
+- Train accuracy reaches 95–100% within a few epochs regardless of configuration (full unfreeze, unfreeze + crop augmentation, `layer4`-only unfreeze) — all three land in the same 34–37% val range.
+- Per-class recall (confusion matrix):
+  - Trigger: ~68% — best-generalizing class. ヽ(・∀・)ノ
+<img width="678" height="637" alt="image" src="https://github.com/user-attachments/assets/84941be5-6f31-4fe5-b5f4-f9d9b3f5b6a3" />
 
-- **Kyoto Animation, Bones, MAPPA, Madhouse** — activation consistently concentrates on faces and character features. Plausibly legitimate (facial rendering is part of studio style) but also plausibly confounded with specific recurring character designs.
-- **Wit Studio** — activation consistently concentrates on stone/brick/architectural textures and backgrounds, confirmed across both correct and incorrect predictions. This is a genre/setting confound: all three source shows (AoT, Vinland Saga, Ranking of Kings) are architecture/ruins-heavy, so the model appears to have learned "stone texture → Wit Studio" rather than Wit Studio's actual line/shading style. This shortcut was directly observed causing misclassifications of Bones and Trigger images that happened to contain similar architectural/rocky content.
-- **Trigger** — the most mixed class: some images show attention tracing dynamic linework/action silhouettes (a genuinely style-relevant signal), others show face/expression fixation, and one misclassification (Trigger → Wit Studio) was driven by rocky terrain in the background.
-- **ufotable** — Background and Character faces driven.
+## Explainability (Grad-CAM)
 
-**Takeaway**: aggregate accuracy alone understates how much of the model's behavior is driven by genre/setting overlap between shows rather than by the intended target (studio rendering style).
+`pytorch-grad-cam`, hooked on `layer4[-1]`, run on both correct and incorrect predictions:
 
-## Notes on limitations
+- **Kyoto Animation, Bones, MAPPA, Madhouse**: activation concentrates on faces/character features.
+- **Wit Studio**: activation concentrates on stone/brick/architectural background textures, not character rendering. All three training shows (AoT, Vinland Saga, Ranking of Kings) are architecture-heavy — model learned "stone texture → Wit Studio" rather than an actual style. Confirmed by confusion matrix: this didn't transfer to new content (Kabaneri, Vivy).
+- **Trigger**: correct predictions on unseen-show images trace linework/silhouette and full-scene composition, not just faces — consistent with its higher held-out recall.
+- **ufotable**: background- and face-driven.
 
-- Class sizes are small (224 train images/class) by deep learning standards, a meaningful factor in both the overfitting pattern seen in stage 2 and the genre/content confounds surfaced by Grad-CAM.
-- Only trained/raw model weights and code are published in this repository. No scraped image dataset is redistributed.
+## Limitations
 
-## This is not good enough!
-
-Change the entire dataset, from test, val, and train getting the same anime to now, test getting the 320 images from the shows that already exist, and test and val getting new shows entirely!!
+- 320 train images/class is small; contributes to the fast overfitting in stage 2.
+- Code and trained weights only — scraped dataset is not redistributed.
