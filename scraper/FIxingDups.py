@@ -5,7 +5,7 @@ import os
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 
-IMAGE_DIR = ROOT_DIR / "Images"
+IMAGE_DIR = ROOT_DIR / "Validation Data"
 
 # Removing duplicates from the already created Image folder
 def dedup_studio(studio_dir):
