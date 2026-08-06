@@ -1,0 +1,82 @@
+*{
+    margin: 0px;
+    padding: 0px;
+    font-family: Geneva;
+}
+
+.banner{
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    border-color: gold;
+    border-style: double;
+    border-left: 10cm;
+    border-right: 10cm;
+    border-width: 10px;
+    background-color: red;
+}
+
+.banner-text{
+    display: inline-block;
+    animation: scroll-banner 20s linear infinite;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 30px;
+    color: aliceblue;
+}
+@keyframes scroll-banner {
+    from{transform: translateX(100vw);}
+    to{transform: translateX(-100vw);}
+}
+
+.main-content{
+    display: flex;
+    flex-direction: row;
+    margin-top: 8px;
+}
+
+.studio-art-snippet{
+    width: 50%;
+    height: 400px;
+    border-style: groove;
+    border-color: gold;
+    border-width: 10px;
+
+}
+.studio-art-snippet img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.leader-Board{
+    width: 25%;
+    height: 400px;
+    border-style:groove;
+    border-color: gold;
+    border-width: 10px;
+}
+
+.prediction-display{
+    width: 25%;
+    height: 400px;
+    border-style:groove;
+    border-color: gold;
+    border-width: 10px;
+}
+
+.studio-selection h3{
+    text-align: center;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #A3262A;
+    color: aliceblue;
+
+}
+
+.studio-options{
+    display: flex;
+    padding: 3px;
+    margin: 10px;
+    gap: 100px;
+    justify-content: center;
+    
+}
