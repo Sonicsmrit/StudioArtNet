@@ -11,7 +11,24 @@ let timeLeft = 20;
 let timer;
 let startgaming = false;
 
-const ai_pred = "MAPPA"
+async function  getResponse() {
+
+    try{
+
+        const response = await fetch("http://127.0.0.1:8000/predict")
+        if (!response.ok) {
+            throw new Error("API request failed");
+        }
+        const data = await response.json()
+
+        return data
+    }
+    catch(error){
+        console.error("API Error: ", error)
+    }
+    
+}
+
 
 buttons.forEach(function(button) {
     button.addEventListener("click", function() {
@@ -128,6 +145,7 @@ function game(){
 }
 
 
+getResponse()
 game()
 updateleaderboard()
 
