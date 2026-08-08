@@ -4,6 +4,10 @@
     font-family: Geneva;
 }
 
+body{
+    background-color: beige;
+}
+
 .banner{
     overflow: hidden;
     white-space: nowrap;
@@ -21,6 +25,7 @@
     animation: scroll-banner 20s linear infinite;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 30px;
+    background-color: red;
     color: aliceblue;
 }
 @keyframes scroll-banner {
@@ -54,6 +59,7 @@
     border-style:groove;
     border-color: gold;
     border-width: 10px;
+    background-color: azure;
 }
 
 .prediction-display{
@@ -78,5 +84,69 @@
     margin: 10px;
     gap: 100px;
     justify-content: center;
+    background-color: beige;
     
+}
+
+.studio-options button{
+    background-color: #F2888B;
+    padding: 5px;
+    border-style: inset;
+    border-width: 8px;
+    font-size: 25px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: aliceblue;
+    border-color: #F5AC27;
+    transition: transform 0.5s ease;
+}
+
+.studio-options button:hover{
+    background-color: #CC232A;
+    border-color: gold;
+    transform: scale(1.05);
+}
+.studio-options button.selected{
+    background-color: yellowgreen;
+    border-color: orangered;
+    color: black;
+
+}
+
+.check{
+    background-color: transparent;
+    color: transparent;
+    border-color: transparent;
+
+}
+
+.check-select{
+    background-color: #CC232A;
+    color: aliceblue;
+    border-color: gold;
+    border-style: ridge;
+    border-width: 5px;
+    display: flex;
+    border-width: 8px;
+    padding: 10px;
+    justify-content: center;
+    text-align: center;
+    margin-top: 70px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.check-select:hover{
+    background-color: red;
+    border-color: rgb(255, 166, 0);
+    color: rgb(128, 255, 1);
+    
+}
+
+.check.selected{
+    animation: boop 0.5s linear;
+}
+@keyframes boop {
+    from{transform: scale(1)}
+    50%{transform: scale(1.2);}
+    to{transform: scale(1)}
 }
