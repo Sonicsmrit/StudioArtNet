@@ -45,6 +45,9 @@ body{
     border-style: groove;
     border-color: gold;
     border-width: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
 }
 .studio-art-snippet img {
@@ -143,10 +146,78 @@ body{
 }
 
 .check.selected{
-    animation: boop 0.5s linear;
+    animation: boop 0.3s linear;
 }
 @keyframes boop {
     from{transform: scale(1)}
-    50%{transform: scale(1.2);}
+    50%{transform: scale(1.1);}
     to{transform: scale(1)}
+}
+
+.leaderboard-player {
+    font-size: 20px;
+    padding: 10px;
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.leaderboard-ai {
+    font-size: 20px;
+    padding: 10px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.timer {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-left,
+.timer-right {
+    position: absolute;
+    height: 100%;
+    width: 52%;
+    background-color: greenyellow;
+    transition: width 1s linear;
+}
+
+.timer-left {
+    left: 0;
+    transform-origin: right;
+}
+
+.timer-right {
+    right: 0;
+    transform-origin: left;
+}
+
+#timer-text {
+    position: relative;
+    z-index: 2;
+    font-size: 30px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.startingScreen{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: aliceblue;
+}
+
+.startingScreen button{
+    margin-top: 30px;
+    padding: 10px;
+    color: aliceblue;
+
+    background-color: #A3262A;
+    border-color: #F5AC27;
+    border-width: 3px;
+}
+.startingScreen button:hover{
+    background-color: #ff030b;
+    border-color: #ffa703;
 }
