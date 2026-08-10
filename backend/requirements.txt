@@ -1,6 +1,7 @@
---extra-index-url https://pytorch.org
-torch==2.4.0+cpu
-torchvision==0.19.0+cpu
+--index-url https://download.pytorch.org/whl/cpu
+--extra-index-url https://pypi.org/simple
+torch==2.13.0
+torchvision==0.23.0
 fastapi==0.112.0
 uvicorn==0.30.5
 pillow==10.4.0
