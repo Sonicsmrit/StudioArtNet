@@ -5,7 +5,7 @@ from pathlib import Path
 import random
 from fastapi.staticfiles import StaticFiles
 
-IMAGE_DIR = Path(__file__).resolve().parent / "game image"
+IMAGE_DIR = Path(__file__).resolve().parent.parent / "game image"
 
 
 def get_random_image():
