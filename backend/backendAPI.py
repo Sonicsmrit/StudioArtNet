@@ -3,8 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from ai import predict_image
 from pathlib import Path
 import random
+from fastapi.staticfiles import StaticFiles
 
-IMAGE_DIR = Path(__file__).resolve().parent.parent / "Test Data"
+IMAGE_DIR = Path(__file__).resolve().parent.parent / "game image"
+
 
 def get_random_image():
     images = list(IMAGE_DIR.rglob("*"))
@@ -21,10 +23,12 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware, 
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/images", StaticFiles(directory=IMAGE_DIR), name="images")
 
 @app.get("/")
 def home():
@@ -38,10 +42,15 @@ def predict():
 
     studio = predict_image(image_path)
 
+    if isinstance(studio, list):
+        studio = studio[0]
+
+    relative_path = image_path.relative_to(IMAGE_DIR)
+
     return {
-        "image": image_path.name,
-        "studio": studio,
-        "real studio": real_studio
+        "image":  f"http://127.0.0.1:8000/images/{relative_path.as_posix()}",
+        "studio_prediction": studio,
+        "real_studio": real_studio
     }
 
 

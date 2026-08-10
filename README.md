@@ -57,4 +57,3 @@ Two-stage transfer learning, pretrained ResNet-50:
 ## Limitations
 
 - 320 train images/class is small; contributes to the fast overfitting in stage 2.
-- Code and trained weights only — scraped dataset is not redistributed.
