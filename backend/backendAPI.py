@@ -5,7 +5,7 @@ from pathlib import Path
 import random
 from fastapi.staticfiles import StaticFiles
 
-IMAGE_DIR = Path(__file__).resolve().parent.parent / "game image"
+IMAGE_DIR = Path(__file__).resolve().parent / "game image"
 
 
 def get_random_image():
@@ -48,7 +48,7 @@ def predict():
     relative_path = image_path.relative_to(IMAGE_DIR)
 
     return {
-        "image":  f"http://127.0.0.1:8000/images/{relative_path.as_posix()}",
+        "image":  f"https://studioartnet.onrender.com/images/{relative_path.as_posix()}",
         "studio_prediction": studio,
         "real_studio": real_studio
     }
