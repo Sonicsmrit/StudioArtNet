@@ -54,7 +54,7 @@ Two-stage transfer learning, pretrained ResNet-50:
 - **Trigger**: correct predictions on unseen-show images trace linework/silhouette and full-scene composition, not just faces — consistent with its higher held-out recall.
 - **ufotable**: background- and face-driven.
 
-### example of Grad-CAM's findings:
+### Examples of Grad-CAM's findings:
 <img width="585" height="675" alt="Screenshot (98)" src="https://github.com/user-attachments/assets/8bcdacee-330a-4eb7-9e64-67e9a8ca6194" />
 <img width="590" height="613" alt="Screenshot (95)" src="https://github.com/user-attachments/assets/18765c16-84a8-4ca7-9a81-53d5a5d2ade7" />
 
