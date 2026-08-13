@@ -7,6 +7,16 @@
     box-sizing: border-box;
 }
 
+.title-name{
+    text-align: center;
+    font-family: 'Mochiy Pop One', sans-serif;
+    font-size: 36px;
+    color: #E8384F;
+    text-shadow: 3px 3px 0 #FFD166;
+    padding: 20px 10px 10px;
+    letter-spacing: 1px;
+}
+
 body{
     background-color: #FFF6ED;
     background-image: radial-gradient(#FCE2A8 8%, transparent 8%), radial-gradient(#FCE2A8 8%, transparent 8%);
@@ -468,4 +478,47 @@ body{
     text-align: center;
     padding: 20px 12px;
     opacity: 0.75;
+}
+
+@media (max-width: 900px){
+    .main-content{
+        flex-direction: column;
+    }
+    .studio-art-snippet,
+    .leader-Board,
+    .prediction-display{
+        width: 100%;
+        height: 380px;
+    }
+    .leader-Board{ order: 2; }
+    .studio-art-snippet{ order: 1; }
+    .prediction-display{ order: 3; }
+}
+
+@media (max-width: 600px){
+    .title-name{ font-size: 26px; }
+    .banner-text{ font-size: 20px; }
+    .studio-art-snippet{ height: 260px; }
+    .leader-Board,
+    .prediction-display{ height: 300px; }
+
+    .studio-options button{
+        min-width: 130px;
+        padding: 14px 20px;
+        font-size: 20px;
+    }
+    .studio-options{
+        gap: 14px;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 400px){
+    .studio-options button{
+        min-width: 100%;
+    }
+    .check-select{
+        padding: 14px 24px;
+        font-size: 17px;
+    }
 }
